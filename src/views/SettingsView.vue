@@ -91,7 +91,7 @@ function onImportTracks() {
     }
 
     for (let track of json) {
-        tracks.add(track.name, track.url);
+        tracks.add(track.name, track.url, track.uuid);
     }
 
     importString.value = '';
