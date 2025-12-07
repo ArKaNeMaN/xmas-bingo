@@ -23,5 +23,7 @@ export const useTracksStore = defineStore('tracks', () => {
 
     const list = computed(() => Object.values(tracksMap.value));
 
-    return {list, add, remove};
+    const count = computed(() => Object.keys(tracksMap.value).length);
+
+    return {list, add, remove, count};
 });

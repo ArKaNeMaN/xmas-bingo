@@ -17,7 +17,7 @@ function isButtonUsed(index) {
 
 <template>
     <div class="h-full flex flex-col justify-center">
-        <div class="p-24 flex justify-around flex-row flex-wrap gap-16 opacity-95">
+        <div class="p-24 flex justify-around items-center flex-row flex-wrap gap-16 opacity-95">
             <BingoButton
                 v-for="(track, index) in seed.sortedTracks"
                 :key="track.uuid"

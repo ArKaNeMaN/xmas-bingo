@@ -35,7 +35,7 @@ function onClose() {
 
 <template>
     <button
-        class="border-4 text-3xl w-20 h-20 cursor-pointer outline-0" :class="classes"
+        class="border-4 text-3xl w-20 h-20 cursor-pointer outline-0 rounded-sm" :class="classes"
         @click.prevent="onClick(false)"
         @click.alt.prevent="onClick(true)"
     >

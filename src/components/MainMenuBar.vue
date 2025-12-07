@@ -30,7 +30,7 @@ function navigateTo(route) {
     <NavigationMenu :viewport="false">
         <NavigationMenuList>
             <NavigationMenuItem v-for="item in items">
-                <NavigationMenuLink as-child :class="navigationMenuTriggerStyle()">
+                <NavigationMenuLink as-child :class="navigationMenuTriggerStyle()" :active="router.currentRoute.value.path === item.route">
                     <a
                         @click.prevent="navigateTo(item.route)"
                         :href="item.route"
