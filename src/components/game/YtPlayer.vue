@@ -1,10 +1,8 @@
 <script setup>
-import {computed, onMounted, ref} from "vue";
+import {computed, onMounted, onUnmounted, ref} from "vue";
 
 const props = defineProps({
     url: String,
-    width: Number,
-    height: Number,
 });
 
 const embedUrl = computed(() => {
@@ -61,14 +59,37 @@ function buildYoutubeEmbedUrl(rawUrl) {
     }
 }
 
+const frameEl = ref(null);
+const divEl = ref(null);
+let observer = null;
+
+onMounted(function () {
+    setTimeout(function () {
+        frameEl.value.width = divEl.value.offsetWidth;
+        frameEl.value.height = divEl.value.offsetHeight;
+
+        observer = new ResizeObserver(function () {
+            frameEl.value.width = divEl.value.offsetWidth;
+            frameEl.value.height = divEl.value.offsetHeight;
+        });
+        observer.observe(document.body);
+        observer.observe(divEl.value);
+    }, 0);
+});
+
+onUnmounted(function () {
+    observer.disconnect();
+});
+
 </script>
 
 <template>
-    <iframe
-        id="player"
-        type="text/html"
-        :width="width"
-        :height="height"
-        :src="embedUrl"
-    ></iframe>
+    <div ref="divEl" class="bg-black">
+        <iframe
+            id="player"
+            type="text/html"
+            :src="embedUrl"
+            ref="frameEl"
+        ></iframe>
+    </div>
 </template>

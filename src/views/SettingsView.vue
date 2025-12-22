@@ -3,7 +3,7 @@
 import {useUsedButtonsStore} from "@/stores/used-buttons.js";
 import {Button} from "@/components/ui/button/index.js";
 import {
-    Card, CardAction,
+    Card,
     CardContent, CardDescription, CardFooter,
     CardHeader,
     CardTitle
