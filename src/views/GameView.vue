@@ -7,7 +7,6 @@ const seed = useSeedStore();
 
 const usedButtons = useUsedButtonsStore();
 function onButtonUsed(index) {
-    console.log(`Button #${index} used.`);
     usedButtons.markAsUsed(index)
 }
 function isButtonUsed(index) {

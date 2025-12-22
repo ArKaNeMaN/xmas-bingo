@@ -68,7 +68,6 @@ function onExportTracks() {
 
     let objJsonStr = encodeURIComponent(JSON.stringify(tracks.list));
     let objJsonB64 = btoa(objJsonStr);
-    console.log(objJsonB64);
 
     navigator.clipboard.writeText(objJsonB64);
 }
