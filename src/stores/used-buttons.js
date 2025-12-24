@@ -1,6 +1,7 @@
 import {defineStore} from 'pinia'
 import {useLocalStorage} from "@vueuse/core";
 import {computed} from "vue";
+import {useTracksStore} from "@/stores/tracks.js";
 
 export const useUsedButtonsStore = defineStore('used-buttons', () => {
     const store = useLocalStorage('used-buttons', {});
@@ -19,5 +20,16 @@ export const useUsedButtonsStore = defineStore('used-buttons', () => {
 
     const count = computed(() => Object.keys(store.value).length);
 
-    return {isUsed, markAsUsed, reset, count};
+    const tracks = useTracksStore();
+    const isFinished = computed(() => {
+        for (let track of tracks.list) {
+            if (!isUsed(track.uuid)) {
+                return false;
+            }
+        }
+
+        return true;
+    });
+
+    return {isUsed, markAsUsed, reset, count, isFinished};
 })

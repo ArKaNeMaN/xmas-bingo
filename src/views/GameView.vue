@@ -2,6 +2,7 @@
 import BingoButton from "@/components/game/BingoButton.vue";
 import {useUsedButtonsStore} from "@/stores/used-buttons.js";
 import {useSeedStore} from "@/stores/seed.js";
+import BgFireworks from "@/components/BgFireworks.vue";
 
 const seed = useSeedStore();
 
@@ -29,8 +30,6 @@ function isButtonUsed(index) {
             </BingoButton>
         </div>
     </div>
+
+    <BgFireworks v-if="usedButtons.isFinished"/>
 </template>
-
-<style scoped>
-
-</style>

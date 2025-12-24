@@ -5,13 +5,13 @@ const snowCanvasEl = ref(null);
 
 const Snowflake = (function () {
     let flakes;
-    const flakesTotal = (width) => Math.round(width * 0.2);
+    const flakesTotal = (width) => Math.round(width * 0.1);
 
     let canvas;
     let ctx;
     let initialOpacity = .9;
     let meltedOpacity = .1;
-    let opacityTransitionSpeed = .005;
+    let opacityTransitionSpeed = .01;
 
     function Snowflake(size, x, y, vx, vy, yellow = false) {
         this.size = size;
