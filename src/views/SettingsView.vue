@@ -63,13 +63,41 @@ function onRemoveTrack(uuid) {
     tracks.remove(uuid);
 }
 
+function makeExportText() {
+    return btoa(encodeURIComponent(JSON.stringify(tracks.list)));
+
+}
+
 function onExportTracks() {
+    navigator.clipboard.writeText(makeExportText());
+
     alert('Результат экспорта был скопирован в буфер обмена.');
+}
 
-    let objJsonStr = encodeURIComponent(JSON.stringify(tracks.list));
-    let objJsonB64 = btoa(objJsonStr);
+function onExportTracksAsFile() {
+    const el = document.createElement('a');
+    el.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(makeExportText()));
+    el.setAttribute('download', 'bingo.txt');
 
-    navigator.clipboard.writeText(objJsonB64);
+    el.style.display = 'none';
+    document.body.appendChild(el);
+
+    el.click();
+}
+
+function importTracksAsText(text) {
+    let json = [];
+    try {
+        json = JSON.parse(decodeURIComponent(atob(text)));
+    } catch (e) {
+        console.error(e);
+        alert('Указанная строка некорректна.');
+        return;
+    }
+
+    for (let track of json) {
+        tracks.add(track.name, track.url, track.uuid);
+    }
 }
 
 const importString = ref('');
@@ -80,20 +108,28 @@ function onImportTracks() {
         return;
     }
 
-    let json = [];
-    try {
-        json = JSON.parse(decodeURIComponent(atob(importString.value)));
-    } catch (e) {
-        console.error(e);
-        alert('Указанная строка некорректна.');
+    importTracksAsText(importString.value);
+
+    importString.value = '';
+}
+
+function onImportFileChanged(e) {
+    if (e.target.files.length < 1) {
         return;
     }
 
-    for (let track of json) {
-        tracks.add(track.name, track.url, track.uuid);
+    const reader = new FileReader();
+    reader.onload = function({ target }) {
+        importString.value = target.result;
+        // alert('Содержимое файла вставлено в поле строки импорта.');
     }
+    reader.onerror = function() {
+        alert('При чтении файла произошла ошибка.');
+        importString.value = '';
+    }
+    reader.readAsText(e.target.files[0], `UTF-8`);
 
-    importString.value = '';
+    e.target.value = null;
 }
 
 const isTracksExpanded = ref(false);
@@ -125,8 +161,8 @@ const tracksListClasses = computed(() => isTracksExpanded.value ? 'h-120' : 'h-3
                 <CardContent class="flex flex-col gap-2 items-start">
                     <p>Текущий сид: {{ seed.value }}</p>
 
-                    <form class="flex flex-row gap-2" @submit.prevent="onUpdateSeed">
-                        <Input v-model="newSeed"/>
+                    <form class="flex flex-row w-full gap-2" @submit.prevent="onUpdateSeed">
+                        <Input v-model="newSeed" class="grow"/>
                         <Button type="submit">Обновить</Button>
                         <Button variant="outline" type="button" @click.prevent="onRandomSeed">
                             Случайный
@@ -194,8 +230,9 @@ const tracksListClasses = computed(() => isTracksExpanded.value ? 'h-120' : 'h-3
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <div class="grid grid-cols-1 w-full">
-                        <Button @click.prevent="onExportTracks">Экспортировать</Button>
+                    <div class="grid grid-cols-1 w-full gap-2">
+                        <Button @click.prevent="onExportTracks">Экспортировать как текст</Button>
+                        <Button @click.prevent="onExportTracksAsFile" variant="outline">Экспортировать как файл</Button>
                     </div>
                 </CardContent>
             </Card>
@@ -208,7 +245,10 @@ const tracksListClasses = computed(() => isTracksExpanded.value ? 'h-120' : 'h-3
                 </CardHeader>
                 <CardContent>
                     <form class="grid grid-cols-1 w-full gap-2" @submit.prevent="onImportTracks">
-                        <Input v-model="importString" placeholder="Полученная из экспорта строка"/>
+                        <div class="flex flex-row gap-2">
+                            <Input class="grow" v-model="importString" placeholder="Полученная из экспорта строка"/>
+                            <Input class="shrink max-w-60" type="file" @change="onImportFileChanged"/>
+                        </div>
                         <Button type="submit">Импортировать</Button>
                     </form>
                 </CardContent>
